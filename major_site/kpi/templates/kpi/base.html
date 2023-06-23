@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="ru">
+
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui"/>
+    <meta name="robots" content="noindex,nofollow"/>
+    <link rel="apple-touch-icon" href="{% static 'kpi/images/favicon.ico' %}"/>
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'kpi/images/favicon.ico' %}"/>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i%7CQuicksand:300,400,500,700"
+          rel="stylesheet"/>
+
+    <title>MyCorp</title>
+
+    <!-- BEGIN: Custom CSS-->
+    {% block page_style %} {% endblock page_style %}
+    <!-- END: Custom CSS-->
+
+    <!-- BEGIN: Vendor CSS-->
+    <link rel="stylesheet" type="text/css" href="{% static 'kpi/css/vendors.min.css' %}"/>
+    <!-- END: Vendor CSS-->
+
+    <!-- BEGIN: Theme CSS-->
+    <link rel="stylesheet" type="text/css" href="{% static 'kpi/css/bootstrap.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'kpi/css/bootstrap-extended.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'kpi/css/components.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'kpi/css/colors.css' %}"/>
+    <!-- END: Theme CSS-->
+
+    <!-- BEGIN: Page CSS-->
+    <link rel="stylesheet" type="text/css"
+          href="{% static 'kpi/css/vertical-menu-modern.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'kpi/css/fonts/simple-line-icons/style.css' %}"/>
+    <link rel="stylesheet" type="text/css"
+          href="{% static 'kpi/css/fonts/line-awesome/css/line-awesome.min.css' %}  "/>
+    <link rel="stylesheet" type="text/css"
+          href="{% static 'kpi/css/fonts/feather/style.min.css' %}  "/>
+    <!-- END: Page CSS-->
+</head>
+
+<body class="vertical-layout material-vertical-layout material-layout 1-columns fixed-navbar pace-done"
+      data-open="click" data-menu="vertical-content-menu" data-col="1-columns" style="overflow: auto">
+<!-- BEGIN: Header-->
+{% block navbar %}
+<nav class="header-navbar navbar-expand-md navbar navbar-without-dd-arrow fixed-top navbar-semi-dark navbar-hide-on-scroll navbar-shadow navbar-border">
+    <div class="navbar-wrapper">
+        <div class="navbar-header expanded">
+            <ul class="nav navbar-nav flex-row">
+                <li class="nav-item mobile-menu d-lg-none mr-auto">
+                    <a class="nav-link nav-menu-main menu-toggle hidden-xs"
+                       onclick="javascript:history.back(-2); return false;"><i
+                            class="ft-arrow-left font-large-1"></i></a>
+                </li>
+                <li class="nav-item mr-auto">
+                    <a class="navbar-brand" href="https://www.major-auto.ru/"><img class="brand-logo" alt="logo"
+                                                                                   src="{% static 'kpi/images/logo.png' %}"/>
+                        <h4 class="brand-text">MyCorp</h4>
+                    </a>
+                </li>
+                <li class="nav-item d-lg-none">
+                    <a class="nav-link open-navbar-container" data-toggle="collapse" data-target="#navbar-mobile"><i
+                            class="la la-ellipsis-v"></i></a>
+                </li>
+            </ul>
+        </div>
+        <div class="navbar-container content">
+            <div class="collapse navbar-collapse" id="navbar-mobile">
+                <ul class="nav navbar-nav mr-auto float-left">
+                    <li class="nav-item d-none d-lg-block">
+                        <a class="nav-link nav-link-expand"><i class="ficon ft-maximize"></i></a>
+                    </li>
+                    {% block dropdown %}
+                    {% endblock dropdown %}
+                </ul>
+
+                <ul class="nav navbar-nav float-right">
+                    {% if auth %}
+                    <li class="dropdown dropdown-user nav-item">
+                        <a class="dropdown-toggle nav-link dropdown-user-link" data-toggle="dropdown">
+                <span class="mr-1 user-name text-bold-700">{{ username }}
+                </span>
+                            {% if photo %}
+                            <span class="avatar avatar-online"><img src="{{ photo.url }}"
+                                                                    alt="avatar"/><i></i></span>
+                            {% else %}
+                            <span class="avatar avatar-online"><img src="{% static 'kpi/images/logo.png' %}"
+                                                                    alt="Avatar"/><i></i></span>
+                            {% endif %}
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" href="{% url 'logout' %}"><i class="ft-power"></i>Выйти</a>
+                            {% else %}
+
+                            <a class="dropdown-item" href="{% url 'login' %}"><i class="ft-unlock"></i>Войти</a>
+                            {% endif %}
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</nav>
+{% endblock navbar %}
+<!-- END: Header-->
+
+<!-- BEGIN: Main Menu-->
+<!-- END: Main Menu-->
+
+<!-- BEGIN: Content-->
+<div class="app-content content">
+    <div class="content-overlay"></div>
+    <div class="content-wrapper">
+        <div class="content-header row"></div>
+        <div class="content-header-left col-md-6 col-12 mb-2 breadcrumb-new">
+            <h3 class="content-header-title mb-0 d-inline-block">
+                {% block page_name %}
+                {% endblock page_name %}
+            </h3>
+            {% block breadcrumbs %}
+            {% if auth %}
+            <div class="row breadcrumbs-top d-inline-block">
+                <div class="breadcrumb-wrapper col-12">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="{% url 'rating' period='month' value='current' %}"><i class="la la-bar-chart"></i>Рейтинг</a>
+                        </li>
+                        <li class="breadcrumb-item active">
+                            <a href="{% url 'add_sell' %}"><i class="la la-car"></i>Добавить продажу</a>
+                        </li>
+                        <li class="breadcrumb-item active">
+                            <a href="{% url 'add_staff' %}"><i class="ft ft-user-plus"></i>Добавить сотрудника</a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a href="{% url 'staff' %}"><i class="la la-users"></i>Сотрудники</a>
+                        </li>
+                    </ol>
+                </div>
+            </div>
+            {% endif %}
+            {% endblock breadcrumbs%}
+        </div>
+
+        <div class="content-body">
+            {% block content %}
+            {% endblock content%}
+        </div>
+    </div>
+</div>
+<!-- END: Content-->
+
+<!-- BEGIN: Footer-->
+<!-- END: Footer-->
+
+<!-- BEGIN: Vendor JS-->
+<script src="{% static 'kpi/js/vendors.min.js' %}"></script>
+<script src="{% static 'kpi/js/headroom.min.js' %}"></script>
+<!-- BEGIN Vendor JS-->
+
+<!-- BEGIN: Theme JS-->
+<script src="{% static 'kpi/js/app-menu.js' %}"></script>
+<script src="{% static 'kpi/js/app.js' %}"></script>
+<!-- END: Theme JS-->
+
+<!-- BEGIN: Page JS-->
+{% block js %}
+{% endblock js %}
+<!-- END: Page JS-->
+
+</body>
+<!-- END: Body-->
+
+</html>

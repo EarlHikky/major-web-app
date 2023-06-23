@@ -1,0 +1,41 @@
+{% extends 'kpi/base.html' %}
+{% load static %}
+
+<!-- BEGIN: Content-->
+{% block content %}
+
+{% for i in '0123456789'|make_list %}
+    {{ forloop.counter }}
+
+
+{% cycle 1 2 3 4 as counter silent %}
+{% if counter == 4 %}
+<p>:JGF</p>
+{% endif %}
+{% endfor %}
+
+<ul>
+    <li>{{ result }}</li>
+<li>{{ result_data }} |||| {{ result_data.id }}</li>
+<li>{{ result_context }}</li>
+<li>{{ json }}</li>
+</ul>
+
+{{ context }} 
+
+
+{% endblock content %}
+<!-- END: Content-->
+<script>
+    window.onload = function () {
+  var jsonData = loadJson('#jsonData');
+
+ var data = jsonData.map((item) => item.id);
+
+
+  console.log(data);
+</script>
+<!-- BEGIN: Page JS-->
+{% block js %}
+{% endblock js %}
+<!-- END: Page JS-->

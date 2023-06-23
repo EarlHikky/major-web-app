@@ -1,0 +1,15 @@
+{% extends 'kpi/form.html' %}
+
+<!-- BEGIN: Content-->
+{% block page_name %} {{ title }} {% endblock page_name %}
+
+{% block form %}
+<form class="form-horizontal form-simple" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <div class="line-on-side"></div>
+    <button type="submit" class="btn btn-info btn-block"><i class="la la-plus"></i>Добавить</button>
+</form>
+{% endblock form %}
+<!-- END: Content-->
+

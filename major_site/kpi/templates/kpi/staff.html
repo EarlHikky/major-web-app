@@ -1,0 +1,35 @@
+{% extends 'kpi/base.html' %}
+{% load static %}
+
+<!-- BEGIN: Content-->
+{% block page_name %} {{ title }} {% endblock page_name %}
+
+{% block content %}
+<section id="simple-user-cards" class="row">
+    {% for employee in employees %}
+    <div class="col-xl-3 col-md-6 col-12">
+        <div class="card pull-up">
+            <div class="text-center">
+                <div class="card-body">
+                    {% if employee.photo %}
+                    <a href="{% url 'sales_by_fio' slug=employee.slug %}"><img src="{{employee.photo.url}}"
+                                                                               class="img-fluid rounded-circle width-150 profile-image shadow-lg border border-3"
+                                                                               alt="Card image"></a>
+                    {% else %}
+                    <a href="{% url 'sales_by_fio' slug=employee.slug %}"><img
+                            src="{% static 'kpi/images/brand_logo.png' %}"
+                            class="img-fluid rounded-circle width-150 profile-image shadow-lg border border-3"
+                            alt="Card image"></a>
+
+                    {% endif %}
+                </div>
+                <div class="card-body">
+                    <h4 class="card-title">{{ employee.name }}</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</section>
+{% endblock content%}
+<!-- END: Content-->

@@ -1,0 +1,61 @@
+{% extends 'kpi/base.html' %}
+{% load static %}
+
+{% block page_style %}
+<!-- BEGIN: Custom CSS-->
+<link rel="stylesheet" type="text/css" href="{% static 'kpi/DataTables/datatables.css' %}"/>
+<!-- END: Custom CSS-->
+{% endblock page_style %}
+
+<!-- BEGIN: Content-->
+{% block page_name %} {{ fio.surname }} {% endblock page_name %}
+
+{% block content %}
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped2" id="table_db">
+                    <thead class="thead-dark">
+                    <tr>
+                        {% for category in categories %}
+                        <th scope="col" class="text-center">{{ category }}</th>
+                        {% endfor %}
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for sale in sales %}
+                    <tr>
+                        <td class="text-center" style="vertical-align: middle">
+                            {{ sale.time_create|date:"Y-m-d" }}
+                        </td>
+                        <td class="text-center" style="vertical-align: middle">
+                            {{ sale.extradition }}
+                        </td>
+                        <td class="text-center" style="vertical-align: middle">
+                            {{ sale.ti|floatformat:"2u" }}
+                        </td>
+                        <td class="text-center" style="vertical-align: middle">
+                            {{ sale.kis|floatformat:"2u" }}
+                        </td>
+                        <td class="text-center" style="vertical-align: middle">
+                            {{ sale.trener|floatformat:"2u" }}
+                        </td>
+                        <td class="text-center" style="vertical-align: middle">
+                            {{ sale.client|floatformat:"2u" }}
+                        </td>
+                        <td class="text-center" style="vertical-align: middle">
+                            {{ sale.total|floatformat:"2u" }}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+{% endblock content %}
+<!-- END: Content-->
+
+<!-- BEGIN: Page JS-->
+{% block js %}
+<script src="{% static 'kpi/DataTables/datatables.js' %}"></script>
+<script src="{% static 'kpi/js/table.js' %}"></script>
+{% endblock js %}
+<!-- END: Page JS-->
+

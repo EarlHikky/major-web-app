@@ -1,0 +1,26 @@
+{% extends 'kpi/form.html' %}
+
+<!-- BEGIN: Content-->
+{% block page_name %} {{ title }} {% endblock page_name %}
+
+{% block form %}
+<form class="form-horizontal form-simple" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <fieldset class="form-group position-relative has-icon-left mb-0">
+        {{ form.name }}
+        <div class="form-control-position">
+            <i class="la la-user"></i>
+        </div>
+    </fieldset>
+    <div class="line-on-side"></div>
+    <fieldset class="form-group position-relative has-icon-left mb-0">
+        {{ form.photo }}
+        <div class="form-control-position">
+            <i class="la la-camera-retro"></i>
+        </div>
+    </fieldset>
+    <div class="line-on-side"></div>
+    <button type="submit" class="btn btn-info btn-block"><i class="ft ft-user-plus"></i>Добавить</button>
+</form>
+{% endblock form %}
+<!-- END: Content-->

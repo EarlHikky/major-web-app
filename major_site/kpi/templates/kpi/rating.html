@@ -1,0 +1,251 @@
+{% extends 'kpi/base.html' %}
+{% load static %}
+
+<!-- BEGIN: Content-->
+{% block page_name %}{{ title }}{% endblock page_name %}
+
+{% block dropdown %}
+<li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+       aria-expanded="false"><i class="la la-calendar-o"></i><span
+            class="d-lg-inline-block d-md-none">Выбор периода</span>
+    </a>
+    <div class="dropdown-menu">
+        <a class="dropdown-item" href="{% url 'rating' period='month' value='current' %}">Текущий месяц</a>
+        <a class="dropdown-item" href="{% url 'rating' period='month' value='previous' %}">Прошлый месяц</a>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item" href="{% url 'rating' period='quarter' value='current' %}">Текущий квартал</a>
+        <a class="dropdown-item" href="{% url 'rating' period='quarter' value='previous' %}">Прошлый квартал</a>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item" href="{% url 'rating' period='year' value='current' %}">Текущий год</a>
+        <a class="dropdown-item" href="{% url 'rating' period='year' value='previous' %}">Прошлый год</a>
+    </div>
+</li>
+{% endblock dropdown %}
+
+{% block content %}
+
+{% for record in records|slice:':3' %}
+{% cycle 'Первое место' 'Второе место' 'Третье место' as position silent %}
+<div class="card pull-up">
+    <div class="card-content">
+        <div class="card-body">
+            <div class="media d-flex">
+                <div class="align-self-centr">
+                    {% cycle 'success-trophy-1' 'success-trophy-2' 'success-trophy-3' as trophy_color silent %}
+                    <i class="icon-trophy {{ trophy_color }} font-large-2 float-right"></i>
+                </div>
+                <div class="media-body text-center">
+                    <h6 class="text-muted">{{ position }}</h6>
+                    <h3>{{ record.fio.surname }}: {{ record.total|floatformat }}</h3>
+                </div>
+                <ul class="list-unstyled users-list m-0">
+                    <li
+                            class="avatar avatar-lg pull-up">
+                        {% if record.fio.photo %}
+                        <a href="{% url 'sales_by_fio' slug=record.fio.slug %}"><img class="media-object rounded-circle"
+                                                                                     src="{{ record.fio.photo.url }}"
+                                                                                     alt="Avatar"></a>
+                        {% else %}
+                        <img class="media-object rounded-circle"
+                             src="{% static 'kpi/images/brand_logo.png' %}"
+                             alt="Avatar">
+                        {% endif %}
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+<div id="recent-sales">
+    <div class="card">
+        <div class="card-content mt-1">
+            <div class="table-responsive">
+                <table id="recent-orders" class="table table-hover table-xl mb-0">
+                    <thead>
+                    <tr>
+                        <th class="border-top-0">Продавец</th>
+                        <th class="border-top-0">Итого</th>
+                        <th class="border-top-0">Выдачи</th>
+                        <th class="border-top-0">ТИ</th>
+                        <th class="border-top-0">КИС</th>
+                        <th class="border-top-0">Тренер</th>
+                        <th class="border-top-0">Клиент</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        {% for record in records %}
+                        <td class="text-truncate p-1">
+                            <ul class="list-unstyled users-list m-0">
+                                <li data-toggle="tooltip" data-popup="tooltip-custom"
+                                    data-original-title="{{ record.fio }}"
+                                    class="avatar avatar-sm pull-up">
+                                    {% if record.fio.photo %}
+                                    <img class="media-object rounded-circle"
+                                         src="{{ record.fio.photo.url }}" alt="Avatar">
+                                    {% else %}
+                                    <img class="media-object rounded-circle"
+                                         src="{% static 'kpi/images/brand_logo.png' %}"
+                                         alt="Avatar">
+                                    {% endif %}
+                                </li>
+                                <a href="{% url 'sales_by_fio' slug=record.fio.slug %}">{{ record.fio.surname }}</a>
+                            </ul>
+                        </td>
+                        <td class="text-truncate">{{ record.total|floatformat }}</td>
+                        <td class="text-truncate">{{ record.extradition|floatformat }}</td>
+                        <td class="text-truncate">{{ record.ti|floatformat }}</td>
+                        <td class="text-truncate">{{ record.kis|floatformat }}</td>
+                        <td class="text-truncate">{{ record.trener|floatformat }}</td>
+                        <td class="text-truncate">{{ record.client|floatformat }}</td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-8 col-12">
+        <div class="card pull-up">
+            <div class="card-content mt-1">
+                <div class="card-body">
+                    <canvas style="flex" id="myChart1"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 col-12">
+        <div class="card pull-up">
+            <div class="card-content mt-1">
+                <div class="card-body">
+                    <canvas style="flex" id="myChart2"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+<!-- END: Content-->
+
+<!-- BEGIN: Page JS-->
+{% block js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  const ctx = document.getElementById('myChart1');
+  const ctx2 = document.getElementById('myChart2');
+
+  var labels = [
+        {% for record in records %}
+            "{{ record.fio.surname }}",
+        {% endfor %}
+  ]
+
+  var total_sum = [
+        {% for record in records %}
+            "{{ record.total|floatformat:"0" }}",
+        {% endfor %}
+  ]
+
+   var extradition_sum = [
+        {% for record in records %}
+            "{{ record.extradition|floatformat:"0" }}",
+        {% endfor %}
+   ]
+
+  var ti_sum = [
+        {% for record in records %}
+            "{{ record.ti|floatformat:"0" }}",
+        {% endfor %}
+  ]
+
+  var kis_sum = [
+        {% for record in records %}
+            "{{ record.kis|floatformat:"0" }}",
+        {% endfor %}
+  ]
+
+  var trener_sum = [
+        {% for record in records %}
+            "{{ record.trener|floatformat:"0" }}",
+        {% endfor %}
+  ]
+
+  var client_sum = [
+        {% for record in records %}
+            "{{ record.client|floatformat:"0" }}",
+        {% endfor %}
+  ]
+
+
+
+new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [{
+      label: 'Выдачи',
+      data: extradition_sum,
+      borderWidth: 1
+      },
+      {
+      label: 'ТИ',
+      data: ti_sum,
+      borderWidth: 1
+      },
+      {
+      label: 'КИС',
+      data: kis_sum,
+      borderWidth: 1
+      },
+      {
+      label: 'Тренер',
+      data: trener_sum,
+      borderWidth: 1
+      },
+      {
+      label: 'Клиент',
+      data: client_sum,
+      borderWidth: 1
+      }]
+    },
+    options: {
+      plugins: {
+      legend: false,
+    },
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
+
+  new Chart(ctx2, {
+    type: 'pie',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Итого',
+        data: total_sum,
+      }]
+    },
+    options: {
+        plugins: {
+      legend: false,
+       },
+    }
+  });
+
+</script>
+{% endblock js %}
+<!-- END: Page JS-->
+
+
+
+
+
